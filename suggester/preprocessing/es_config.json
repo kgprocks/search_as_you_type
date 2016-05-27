@@ -1,0 +1,122 @@
+{
+    "settings": {
+        "number_of_shards": 5,
+        "number_of_replicas": 1,
+        "similarity": {
+            "default": {
+                "type":"BM25"
+            }
+        },
+        "analysis": {
+            "char_filter": {
+                "index_delimiter": {
+                    "type": "mapping",
+                    "mappings": [",=>", ".=>\\u0020", "-=>\\u0020"]
+                },
+                "search_delimiter": {
+                    "type": "mapping",
+                    "mappings": [",=>", ".=>\\u0020", "-=>\\u0020"]
+                },
+                "space_pattern": {
+                    "type": "pattern_replace",
+                    "pattern": "\\s+",
+                    "replacement": " "
+                }
+            },
+            "filter": {
+                "synonym": {
+                    "type": "synonym",
+                    "synonyms" : ["shree, shri"],
+                    "tokenizer": "whitespace",
+                    "ignore_case": true,
+                    "expand": true
+                },
+                "StopWordsFilter": {
+                    "type": "stop",
+                    "stopwords": ["private", "limited", "pvt", "ltd"]
+                }
+            },
+            "analyzer": {
+                "simple_keyword":{
+                    "type": "custom",
+                    "tokenizer": "keyword",
+                    "filter": ["lowercase", "StopWordsFilter", "synonym"],
+                    "char_filter": ["index_delimiter"]
+                },    
+                "simple_edgegram":{
+                    "type": "custom",
+                    "tokenizer": "simple_edgegram",
+                    "filter": ["lowercase", "StopWordsFilter", "synonym"],
+                    "char_filter": ["index_delimiter"]
+                },
+                "index_whitespace_edgegram": {
+                    "type": "custom",
+                    "tokenizer": "whitespace_edgegram",
+                    "filter": ["lowercase", "StopWordsFilter", "synonym"],
+                    "char_filter": ["index_delimiter"]  
+                },
+                "index_whitespace_keyword": {
+                    "type": "custom",
+                    "tokenizer": "whitespace",
+                    "filter": ["lowercase", "StopWordsFilter", "synonym"],
+                    "char_filter": ["index_delimiter"]
+                },
+                "search_whitespace_keyword": {
+                    "type": "custom",
+                    "tokenizer": "whitespace",
+                    "filter": ["lowercase", "StopWordsFilter"],
+                    "char_filter": ["search_delimiter", "space_pattern"]
+                }
+            },
+            "tokenizer": {
+                "simple_edgegram": {
+                    "type": "edgeNGram",
+                    "min_gram": 1,
+                    "max_gram": 100,
+                    "token_chars": ["letter", "digit", "symbol", "punctuation", "whitespace"]
+                },
+                "whitespace_edgegram": {
+                    "type": "edgeNGram",
+                    "min_gram": 1,
+                    "max_gram": 20,
+                    "token_chars": ["letter", "digit", "symbol", "punctuation"]  
+                }
+            }
+        }
+    },
+    "mappings": {
+        "suggestions": {
+            "dynamic": "strict",
+            "properties": {
+                "cin": {
+                    "type": "string",
+                    "index": "not_analyzed"
+                },
+                "name": {
+                    "type": "string",
+                    "index": "not_analyzed",
+                    "fields": {
+                        "name": {
+                            "type": "string",
+                            "analyzer": "simple_edgegram",
+                            "search_analyzer": "simple_keyword",
+                            "omit_norms": true
+                        },
+                        "whitespace_edgegram": {
+                            "type": "string",
+                            "analyzer": "index_whitespace_edgegram",
+                            "search_analyzer": "search_whitespace_keyword",
+                            "omit_norms": true
+                        },
+                        "whitespace_keyword": {
+                            "type": "string",
+                            "analyzer": "index_whitespace_keyword",
+                            "search_analyzer": "search_whitespace_keyword",
+                            "omit_norms": true
+                        }
+                    }
+                }
+            }
+        }
+    }   
+}
