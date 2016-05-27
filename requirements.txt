@@ -1,2 +1,2 @@
 pyelasticsearch==1.4
-django
+django==1.9.6
