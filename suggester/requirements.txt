@@ -1,2 +1,0 @@
-pyelasticsearch==1.4
-django
