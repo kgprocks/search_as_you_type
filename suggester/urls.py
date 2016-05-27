@@ -1,7 +1,4 @@
-from django.conf.urls import url, patterns
+from django.conf.urls import url
 import views
 
-urlpatterns = patterns('',
-                       url(r'$',
-                           views.suggest),
-                       )
+urlpatterns = [url(r'$',views.suggest)]
