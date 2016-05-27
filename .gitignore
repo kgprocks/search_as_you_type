@@ -62,3 +62,5 @@ target/
 .ipynb_checkpoints
 
 *.pyc
+
+settings_local.py

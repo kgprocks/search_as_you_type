@@ -51,5 +51,5 @@ class IndexData:
 
 
 
-object_data = IndexData('tofler', 'es_config.json')
-object_data.index_data('/root/companynames.tsv', 'suggestions')
+object_data = IndexData('your_company_name', 'es_config.json')
+object_data.index_data('companynames.tsv', 'suggestions')
