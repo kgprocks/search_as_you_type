@@ -99,20 +99,17 @@
                         "name": {
                             "type": "string",
                             "analyzer": "simple_edgegram",
-                            "search_analyzer": "simple_keyword",
-                            "omit_norms": true
+                            "search_analyzer": "simple_keyword"
                         },
                         "whitespace_edgegram": {
                             "type": "string",
                             "analyzer": "index_whitespace_edgegram",
-                            "search_analyzer": "search_whitespace_keyword",
-                            "omit_norms": true
+                            "search_analyzer": "search_whitespace_keyword"
                         },
                         "whitespace_keyword": {
                             "type": "string",
                             "analyzer": "index_whitespace_keyword",
-                            "search_analyzer": "search_whitespace_keyword",
-                            "omit_norms": true
+                            "search_analyzer": "search_whitespace_keyword"
                         }
                     }
                 }
