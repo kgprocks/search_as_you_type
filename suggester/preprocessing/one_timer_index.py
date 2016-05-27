@@ -2,6 +2,16 @@ from pyelasticsearch.client import ElasticSearch
 import json
 import requests
 import pyelasticsearch
+import sys
+import os
+import django
+
+SCRIPT_DIR = os.path.abspath(os.path.dirname(__file__))
+sys.path.append(os.path.join(SCRIPT_DIR + '/../..'))
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
+
+from django.conf import settings
+
 
 class IndexData:
 
@@ -14,22 +24,22 @@ class IndexData:
         self.create_index()
 
     def get_settings(self):
+
         config_file = file(self.settings_path)
         settings = json.load(config_file)
         return settings
 
     def create_index(self):
+
         settings = self.get_settings()
-        print type(settings)
         try:
             self.connection.create_index(self.index_name, settings)
         except pyelasticsearch.exceptions.ElasticHttpError as e:
-        # except:
-            print e
             self.connection.delete_index(self.index_name)
             self.connection.create_index(self.index_name, settings)
 
     def index_data(self, data_path, index_type):
+
         if index_type is None:
             raise "Please enter valid index type"
         objects = []
@@ -39,17 +49,14 @@ class IndexData:
                 word_split = line.split("\t")
                 cin = word_split[0]
                 name = word_split[1].strip()
-                # print cin, name
                 doc = {'cin':cin, 'name':name}
                 objects.append(doc)
                 if len(objects) > 1000:
-                    #check for errors
                     response = self.connection.bulk_index(self.index_name, index_type, objects, id_field='cin')
-                    # print response
                     objects = []
             self.connection.bulk_index(self.index_name, index_type, objects, id_field='cin')
 
 
-
-object_data = IndexData('your_company_name', 'es_config.json')
-object_data.index_data('companynames.tsv', 'suggestions')
+if __name__ == "__main__":
+    object_data = IndexData(settings.INDEX_NAME, 'es_config.json', host=settings.ES_HOST)
+    object_data.index_data('companynames.tsv', settings.DOC_TYPE)
