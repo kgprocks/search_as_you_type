@@ -22,7 +22,7 @@ class MainHandler(tornado.web.RequestHandler):
 
 if __name__ == "__main__":
     application = tornado.web.Application([
-        (r"/", MainHandler),
+        (r"/suggest", MainHandler),
     ])
     application.listen(8888)
     tornado.ioloop.IOLoop.current().start()
